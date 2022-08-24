@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/socket.io/socket.io.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  <input id="input" type="text" autofocus>
+  <button id="button">send</button>
+  <div id="messages"></div>
+  <script>
+    const socket = io("localhost:3000");
+
+    const messagesBlock = document.querySelector('#messages');
+    const input = document.querySelector('#input');
+    const button = document.querySelector('#button');
+
+    socket.on("connect", () => {
+      console.log("connect")
+    })
+
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`)
+    })
+
+    button.addEventListener("click", () => {
+      const data = {
+        message: input.value
+      }
+      
+    socket.emit('client-msg', data)
+    })
+
+    socket.on("server-msg", ( {message})=> {
+      const div = document.createElement("div")
+      div.innerHTML = message
+      messagesBlock.insertAdjacentElement("afterbegin",  div)
+    })
+
+  </script>
+</body>
+</html>
